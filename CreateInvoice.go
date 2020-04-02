@@ -69,18 +69,10 @@ func (s *BillingService) CreateInvoice(userID int, invoice CreateInvoiceRequest)
 		return 0, &Response{}, fmt.Errorf("No Line items for invoice found")
 	}
 
-	for _, li := range invoice.LineItems {
-		//	fmt.Println(li)
-
-		invoiceParams[fmt.Sprintf("itemdescription%d", li.ItemOrder)] = li.ItemDescription
-		invoiceParams[fmt.Sprintf("itemamount%d", li.ItemOrder)] = fmt.Sprintf("%.2f", li.ItemAmount)
-		invoiceParams[fmt.Sprintf("itemtaxed%d", li.ItemOrder)] = FormatBool(li.ItemTaxed)
-
+	li := lineItemstoParams(invoice.LineItems)
+	for k, v := range li {
+		invoiceParams[k] = v
 	}
-	//
-
-	//
-	fmt.Println(invoiceParams)
 
 	resp, err := do(s.client, Params{parms: invoiceParams, u: "CreateInvoice"}, nil)
 	if err != nil {
@@ -89,27 +81,38 @@ func (s *BillingService) CreateInvoice(userID int, invoice CreateInvoiceRequest)
 
 	// WHMCS returns a error sometimes that is not in JSON !
 	r := strings.Replace(resp.Body, `<div class="alert alert-error">Module credit_purchase_improvement: Module error occured. Please contact with support.</div>`, ``, -1)
-	ir := createInvoiceReply{}
+	ir := InvoiceReply{}
 	json.Unmarshal([]byte(r), &ir)
 
 	return ir.InvoiceID, resp, err
 
 }
 
+func lineItemstoParams(items []InvoiceLineItems) map[string]string {
+	lineItems := map[string]string{}
+	for _, li := range items {
+		lineItems[fmt.Sprintf("itemdescription%d", li.ItemOrder)] = li.ItemDescription
+		lineItems[fmt.Sprintf("itemamount%d", li.ItemOrder)] = fmt.Sprintf("%.2f", li.ItemAmount)
+		lineItems[fmt.Sprintf("itemtaxed%d", li.ItemOrder)] = FormatBool(li.ItemTaxed)
+	}
+
+	return lineItems
+}
+
 // CreateInvoiceRequest the new invoice to be created for a client
 type CreateInvoiceRequest struct {
 	// The ID of the client to charge
-	Status          string               // The status of the invoice being created Paid,Unpaid,Draft
-	SendInvoice     bool                 // Should the Invoice Created Email be sent to the client
-	Date            time.Time            // The date that the invoice should show as created
-	DueDate         time.Time            // The due date of the newly created invoice
-	Notes           string               // The notes to appear on the created invoice
-	AutoApplyCredit bool                 // Should credit on the client account be automatically applied to the invoice
-	LineItems       []CreateInvoiceItems // Invoice Line Items
+	Status          string             // The status of the invoice being created Paid,Unpaid,Draft
+	SendInvoice     bool               // Should the Invoice Created Email be sent to the client
+	Date            time.Time          // The date that the invoice should show as created
+	DueDate         time.Time          // The due date of the newly created invoice
+	Notes           string             // The notes to appear on the created invoice
+	AutoApplyCredit bool               // Should credit on the client account be automatically applied to the invoice
+	LineItems       []InvoiceLineItems // Invoice Line Items
 }
 
-// CreateInvoiceItems the new invoice to be created for a client
-type CreateInvoiceItems struct {
+// InvoiceLineItems the new invoice to be created for a client
+type InvoiceLineItems struct {
 	ItemOrder       int     // The Order to be show on the invoice
 	ItemDescription string  // The line items description
 	ItemAmount      float32 // The line items amount
@@ -117,8 +120,9 @@ type CreateInvoiceItems struct {
 
 }
 
-type createInvoiceReply struct {
-	InvoiceID int    `json:"invoiceid"`
-	Result    string `json:"result"`
-	Status    string `json:"status"`
+// InvoiceReply the status after creating or updating an invoice
+type InvoiceReply struct {
+	InvoiceID int    `json:"invoiceid"` // The ID of the invoice
+	Result    string `json:"result"`    // The result of the operation: success or error
+	Status    string `json:"status"`    // The status of the invoice
 }

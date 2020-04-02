@@ -117,12 +117,12 @@ func (s *BillingService) GetLastInvoice(userid int, status string) (Invoice, err
 
 	json.Unmarshal([]byte(resp.Body), &invoices)
 
-	// var r []Invoice
-	// for _, i := range invoices.Invoices.Invoice[0] {
-	// 	r = append(r, i)
-	// }
+	if invoices.Numreturned > 0 {
+		return invoices.Invoices.Invoice[0], nil
+	}
+	return Invoice{}, errors.New("No invoice found")
 
-	return invoices.Invoices.Invoice[0], err
+	// return invoices.Invoices.Invoice[0], err
 }
 
 /*
