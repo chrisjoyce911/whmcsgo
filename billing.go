@@ -58,6 +58,7 @@ type Invoices struct {
 // Invoice from WHCMS
 type Invoice struct {
 	Companyname        string      `json:"companyname"`
+	UserID             int         `json:"userid"`
 	CreatedAt          WHCMSdate   `json:"created_at"`
 	Credit             string      `json:"credit"`
 	Currencycode       string      `json:"currencycode"`

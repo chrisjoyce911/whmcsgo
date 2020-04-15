@@ -61,8 +61,6 @@ invoiceid
 */
 func (s *BillingService) UpdateInvoice(invoiceID int, items []InvoiceLineItems) (*InvoiceReply, *Response, error) {
 
-	fmt.Println("UpdateInvoice")
-
 	i := new(InvoiceReply)
 	parms := map[string]string{}
 
@@ -72,7 +70,6 @@ func (s *BillingService) UpdateInvoice(invoiceID int, items []InvoiceLineItems) 
 		parms[fmt.Sprintf("newitemtaxed[%d]", li.ItemOrder)] = FormatBool(li.ItemTaxed)
 	}
 
-	fmt.Println(parms)
 	parms["invoiceid"] = fmt.Sprintf("%d", invoiceID)
 
 	resp, err := do(s.client, Params{parms: parms, u: "UpdateInvoice"}, i)
