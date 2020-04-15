@@ -85,7 +85,6 @@ type Invoice struct {
 	Taxrate2           string      `json:"taxrate2"`
 	Total              string      `json:"total"`
 	UpdatedAt          WHCMSdate   `json:"updated_at"`
-	Userid             int         `json:"userid"`
 }
 
 func (i Invoices) String() string {
