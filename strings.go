@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 
 	"reflect"
 )
@@ -24,7 +25,10 @@ func Stringify(message interface{}) string {
 
 func stringifyValue(w io.Writer, val reflect.Value) {
 	if val.Kind() == reflect.Ptr && val.IsNil() {
-		w.Write([]byte("<nil>"))
+		_, err := w.Write([]byte("<nil>"))
+		if err != nil {
+			log.Println(err)
+		}
 		return
 	}
 

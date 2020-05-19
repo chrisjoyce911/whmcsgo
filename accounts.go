@@ -165,52 +165,6 @@ func (u Account) String() string {
 }
 
 /*
-AddClient Adds a client
-
-WHMCs API docs
-
-https://developers.whmcs.com/api-reference/addclient/
-
-*/
-func (s *AccountsService) AddClient(parms map[string]string) (*Account, *Response, error) {
-	a := new(Account)
-	resp, err := do(s.client, Params{parms: parms, u: "AddClient"}, a)
-	if err != nil {
-		return nil, resp, err
-	}
-	return a, resp, err
-}
-
-/*
-GetClientsDetails Obtain the Clients Details for a specific client
-
-WARNING
-
-Please use GetContacts , GetClientsDetails may be deprecated and may be removed in a future version of WHMCS.
-
-Note this function returns the client information in the top level array.
-
-WHMCS API docs
-
-https://developers.whmcs.com/api-reference/getclientsdetails/
-
-Request Parameters
-
-to many to list see WHMCS API docs
-*/
-func (s *AccountsService) GetClientsDetails(parms map[string]string) (*Account, *Response, error) {
-	a := new(Account)
-	resp, err := do(s.client, Params{parms: parms, u: "GetClientsDetails"}, a)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	json.Unmarshal([]byte(resp.Body), &a)
-
-	return a, resp, err
-}
-
-/*
 GetContacts Obtain the Client Contacts that match passed criteria
 
 WHMCS API docs
@@ -285,35 +239,6 @@ type WHMCSclients struct {
 	Totalresults int    `json:"totalresults"`
 }
 
-/*
-GetClients Obtain the Clients that match passed criteria
-
-WHMCS API docs
-
-https://developers.whmcs.com/api-reference/getclients/
-
-Request Parameters
-
-limitstart
-	The offset for the returned log data (default: 0) Optional
-limitnum
-	The number of records to return (default: 25) Optional
-sorting
-	The direction to sort the results. ASC or DESC. Default: ASC Optional
-search
-	The search term to look for at the start of email, firstname, lastname, fullname or companyname Optional
-*/
-func (s *AccountsService) GetClients(parms map[string]string) (*WHMCSclients, *Response, error) {
-	obj := new(WHMCSclients)
-	resp, err := do(s.client, Params{parms: parms, u: "GetClients"}, obj)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	json.Unmarshal([]byte(resp.Body), &obj)
-	return obj, resp, err
-}
-
 // ContactList quick contact list
 type ContactList struct {
 	CompanyName    string `json:"companyname"`
@@ -334,7 +259,7 @@ func (s *AccountsService) ClientContactList(status string) ([]ContactList, error
 
 	var contactList []ContactList
 
-	obj := new(WHMCSclients)
+	//	obj := new(WHMCSclients)
 	obj, _, err := s.GetClients(params)
 
 	if err != nil {
@@ -373,24 +298,6 @@ func (s *AccountsService) ClientContactList(status string) ([]ContactList, error
 	return contactList, nil
 }
 
-/*
-UpdateClient Updates a client with the passed parameters.
-
-WHMCS API docs
-
-https://developers.whmcs.com/api-reference/updateclient/
-*/
-func (s *AccountsService) UpdateClient() (*Account, *Response, error) {
-	a := new(Account)
-	var parms map[string]string
-
-	resp, err := do(s.client, Params{parms: parms, u: "updateclient"}, a)
-	if err != nil {
-		return nil, resp, err
-	}
-	return a, resp, err
-}
-
 // ClientLastBilledList quick contact list
 type ClientLastBilledList struct {
 	CompanyName string `json:"companyname"`
@@ -407,7 +314,7 @@ func (s *AccountsService) ClientLastBilled(status string) ([]ClientLastBilledLis
 
 	var contactList []ClientLastBilledList
 
-	obj := new(WHMCSclients)
+	// obj := new(WHMCSclients)
 	obj, _, err := s.GetClients(params)
 
 	if err != nil {
