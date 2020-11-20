@@ -253,7 +253,6 @@ type ContactList struct {
 	Email          string `json:"email"`
 	GroupID        int    `json:"groupid"`
 }
-}
 
 /*
 ClientContactList list of contact for a given status
