@@ -249,6 +249,10 @@ type ContactList struct {
 	AlertPrimary   string `json:"customfields5"`
 	Status         string `json:"status"`
 	UserID         int    `json:"userid"`
+	State          string `json:"state"`
+	Email          string `json:"email"`
+	GroupID        int    `json:"groupid"`
+}
 }
 
 /*
