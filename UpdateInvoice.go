@@ -77,6 +77,6 @@ func (s *BillingService) UpdateInvoice(invoiceID int, items []InvoiceLineItems) 
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &i)
+	err = json.Unmarshal([]byte(resp.Body), &i)
 	return i, resp, err
 }

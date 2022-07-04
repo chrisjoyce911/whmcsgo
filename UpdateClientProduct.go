@@ -94,7 +94,7 @@ func (s *SystemService) UpdateClientProduct(parms map[string]string) (*UpdateCli
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &obj)
+	err = json.Unmarshal([]byte(resp.Body), &obj)
 	return obj, resp, err
 }
 

@@ -56,7 +56,7 @@ func (s *AccountsService) GetClientsProducts(parms map[string]string) (*ClientsP
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &p)
+	err = json.Unmarshal([]byte(resp.Body), &p)
 
 	return p, resp, err
 }

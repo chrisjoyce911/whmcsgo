@@ -115,7 +115,11 @@ func (s *BillingService) GetLastInvoice(userid int, status string) (Invoice, err
 		return Invoice{}, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &invoices)
+	err = json.Unmarshal([]byte(resp.Body), &invoices)
+
+	if err != nil {
+		return Invoice{}, fmt.Errorf("Can't unmarshal invoices: %w", err)
+	}
 
 	if invoices.Numreturned > 0 {
 		return invoices.Invoices.Invoice[0], nil
@@ -160,7 +164,11 @@ func (s *BillingService) GetInvoices(parms map[string]string) ([]Invoice, *Respo
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &invoices)
+	err = json.Unmarshal([]byte(resp.Body), &invoices)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to unmarshal invoices: %w", err)
+	}
 
 	var r []Invoice
 	for _, i := range invoices.Invoices.Invoice {
@@ -207,6 +215,6 @@ func (s *BillingService) CapturePayment(invoice int) (*CaptureResult, *Response,
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &result)
+	err = json.Unmarshal([]byte(resp.Body), &result)
 	return result, resp, err
 }
