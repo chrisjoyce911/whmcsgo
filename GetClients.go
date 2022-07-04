@@ -27,6 +27,6 @@ func (s *AccountsService) GetClients(parms map[string]string) (*WHMCSclients, *R
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &obj)
+	err = json.Unmarshal([]byte(resp.Body), &obj)
 	return obj, resp, err
 }

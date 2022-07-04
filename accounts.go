@@ -211,7 +211,7 @@ func (s *AccountsService) GetContacts(parms map[string]string) (*Account, *Respo
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &a)
+	err = json.Unmarshal([]byte(resp.Body), &a)
 
 	return a, resp, err
 }
@@ -280,7 +280,10 @@ func (s *AccountsService) ClientContactList(status string) ([]ContactList, error
 			if err != nil {
 				fmt.Println(err)
 			}
-			json.Unmarshal([]byte(resp.Body), &cl)
+			err = json.Unmarshal([]byte(resp.Body), &cl)
+			if err != nil {
+				fmt.Println(err)
+			}
 
 			cl.VendorSoftware = strings.TrimSpace(cl.VendorSoftware)
 			cl.Phone = strings.Replace(cl.Phone, "+61.", "0", -1)
@@ -335,17 +338,11 @@ func (s *AccountsService) ClientLastBilled(status string) ([]ClientLastBilledLis
 			if err != nil {
 				fmt.Println(err)
 			}
-			json.Unmarshal([]byte(resp.Body), &cl)
-			// cl.Phone = strings.Replace(cl.Phone, "+61.", "0", -1)
-			// cl.Phone = strings.Replace(cl.Phone, " ", "", -1)
-			// if len(cl.Phone) == 10 {
-			// 	cl.Phone = fmt.Sprintf("%s %s %s", cl.Phone[0:4], cl.Phone[4:7], cl.Phone[7:10])
-			// }
+			err = json.Unmarshal([]byte(resp.Body), &cl)
 
-			// cl.AlertPrimary = strings.Replace(cl.AlertPrimary, " ", "", -1)
-			// if len(cl.AlertPrimary) == 10 {
-			// 	cl.AlertPrimary = fmt.Sprintf("%s %s %s", cl.AlertPrimary[0:4], cl.AlertPrimary[4:7], cl.AlertPrimary[7:10])
-			// }
+			if err != nil {
+				fmt.Println(err)
+			}
 
 			contactList = append(contactList, cl)
 		}

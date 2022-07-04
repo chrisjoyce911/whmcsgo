@@ -28,7 +28,7 @@ func (s *AccountsService) GetClientsDetails(parms map[string]string) (*Account, 
 		return nil, resp, err
 	}
 
-	json.Unmarshal([]byte(resp.Body), &a)
+	err = json.Unmarshal([]byte(resp.Body), &a)
 
 	return a, resp, err
 }

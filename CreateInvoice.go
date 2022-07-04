@@ -82,7 +82,7 @@ func (s *BillingService) CreateInvoice(userID int, invoice CreateInvoiceRequest)
 	// WHMCS returns a error sometimes that is not in JSON !
 	r := strings.Replace(resp.Body, `<div class="alert alert-error">Module credit_purchase_improvement: Module error occured. Please contact with support.</div>`, ``, -1)
 	ir := InvoiceReply{}
-	json.Unmarshal([]byte(r), &ir)
+	err = json.Unmarshal([]byte(r), &ir)
 
 	return ir.InvoiceID, resp, err
 
