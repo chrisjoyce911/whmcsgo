@@ -47,7 +47,7 @@ func (wd *WHCMSdate) UnmarshalJSON(input []byte) error {
 	strInput = strings.Trim(strInput, `"`)
 
 	layout := "2006-01-02 -0700 MST"
-	if strInput == "0000-00-00 00:00:00" {
+	if strInput == "0000-00-00 00:00:00" || strInput == "0000-00-00" {
 		wd.Time = time.Time{}
 		return nil
 	}
